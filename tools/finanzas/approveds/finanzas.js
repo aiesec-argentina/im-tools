@@ -6,9 +6,9 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 		
 
 		//graphql
-		function testgraphql(access_token){
+		function testgraphql(access_token, date_in, date_out, programa){
 			var url_graphql = "https://gis-api.aiesec.org/graphql?access_token=" + access_token
-			console.log(access_token + " dentro da função query")
+
 			var query = `
 			query ApplicationIndexQuery(
 				$page: Int
@@ -25,7 +25,9 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 			  fragment ApplicationList_list on OpportunityApplicationList {
 				data {
 				  status    
-				  date_realized 
+				  date_realized
+				  date_approved
+				  date_matched 
 				  opportunity {
 					id
 					title 
@@ -76,12 +78,16 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 			  }`
 
 			var variables_query = {
-				"page": 1,
-				"perPage": 100,
+				"page": programa.id,
+				"perPage": 50,
 				"filters": {
+					"date_approved":{
+						"from":date_in,
+						"to":date_out
+					},
 					"programmes": 1,
-					"for": "people",
-					"status": "realized"
+					"for": programa.area,
+					"status": "approved"
 				},
 				  "sort":""
 			}
@@ -103,8 +109,58 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 		var start_date = document.getElementById("fecha_in").value;
 		var end_date = document.getElementById("fecha_out").value;
 		var programa = document.getElementById("programa").value;
-		testgraphql(access_token)
-		console.log(access_token + " depois de pegar no html")
+
+		//oGV -GraphQL
+		if(programa == '1'){
+			programa_gql = {
+				'id': 1,
+				'area': "people",
+				'shortname': "oGV"
+			}
+		}
+		//oGT -GraphQL
+		else if(programa == '2'){
+			programa_gql = {
+				'id': 2,
+				'area': "people",
+				'shortname': "oGT"
+			}
+		}
+		//oGE -GraphQL
+		else if(programa == '3'){
+			programa_gql = {
+				'id': 5,
+				'area': "people",
+				'shortname': "oGE"
+			}
+		}
+		//iGV -GraphQL
+		else if(programa == '4'){
+			programa_gql = {
+				'id': 1,
+				'area': "opportunities",
+				'shortname': "iGV"
+			}
+		}
+		//iGT -GraphQL
+		else if(programa == '5'){
+			programa_gql = {
+				'id': 2,
+				'area': "opportunities",
+				'shortname': "iGT"
+			}
+		}
+		//iGE -GraphQL
+		else {
+			programa_gql = {
+				'id': 5,
+				'area': "opportunities",
+				'shortname': "iGE"
+			}
+		}
+
+		testgraphql(access_token,start_date,end_date,programa_gql)
+		
 		spinner_up();
 
 		//MC ECO
