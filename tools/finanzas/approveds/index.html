@@ -8,7 +8,7 @@
 	<link rel="stylesheet" type="text/css" href="main.css">
 </head>
 <body ng-controller="Analytics">
-		<!--SPINNER
+		<!--SPINNER-->
     	<div id="preloader">
 	        <div id="status">
 	            <div class="preloader-wrapper big active">
@@ -62,7 +62,7 @@
 	            </div>
 	        </div>
 	    </div>
-    	SPINNER-->
+    	<!--SPINNER-->
 	<main>
 		<section class="container">
 			<form class="row">
@@ -75,7 +75,7 @@
 					<label for="access_token">To</label>
 				</div>
 				<div class="input-field col s12 m3 l3">
-					<input id="access_token" ng-model="access_token" name="access_token" type="text"  value="">
+					<input id="access_token" ng-model="access_token" name="access_token" type="password" class="validate">
 					<label for="access_token">Token</label>
 				</div>	
         		<div class="input-field col s12 m2 l2">
@@ -113,7 +113,6 @@
 								<th>Host LC</th>
 								<th>Perfil</th>
 								<th>Status</th>
-								
 							</tr>
 						</thead>
 						<tbody>
@@ -144,28 +143,7 @@
 	<!-- Compiled and minified JavaScript -->
   		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
   		<script>
-		/*var get_Token = async() => {
-				const token = await getToken()
-				return globalThis.token
-			}
-		const getToken = async () => {
-			$.get('http://blog.aiesecargentina.org:5000').success(function (res) {
-				return res;
-			})
-		}*/
-		
-		const getToken = () =>  {
-			return $.get("http://blog.aiesecargentina.org:5000");
-			};
-	
-		$(window).load(async function(){
-			
-			var token = await getToken()
-			$("#access_token").val(token)
-
-		})
-
-	    $(document).ready( function() {
+	    $(document).ready(function() {
 			$('.datepicker-in').pickadate({
 				format: 'yyyy-mm-dd',
 				formatSubmit: 'yyyy-mm-dd',
@@ -179,23 +157,14 @@
     			selectMonths: true, // Creates a dropdown to control month
     			selectYears: 15, // Creates a dropdown of 15 years to control year
     			max: true
-			  });
-			  
-			//getting token as async function 
-			
-
-			
-		
-		
-			
+  			});
 	        $('#status').fadeOut(); // will first fade out the loading animation
-			$('#preloader').delay(1).fadeOut('slow'); // will fade out the white DIV that covers the website.
-			$('body').delay(1).css({'overflow':'visible'});
+			$('#preloader').delay(300).fadeOut('slow'); // will fade out the white DIV that covers the website.
+			$('body').delay(300).css({'overflow':'visible'});
 
 			$('select').material_select();
   			
-		});
-		 
+	    });
   		</script>
 </body>
 </html>

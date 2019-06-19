@@ -1,113 +1,7 @@
 var app = angular.module('finanzas', []);
 
-
 app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 	$scope.go = function() {
-		function get_certificate (app_id, access_token){
-			$http.get("https://gis-api.aiesec.org/v2/applications/"+app_id+"?access_token="+access_token).
-							success(function (resp){
-								console.log(resp)
-								return resp
-							})
-		}
-
-		//graphql
-		function testgraphql(access_token){
-			var url_graphql = "https://gis-api.aiesec.org/graphql?access_token=" + access_token
-			
-			var query = `
-			query ApplicationIndexQuery(
-			  $page: Int
-			  $perPage: Int
-			  $filters: ApplicationFilter
-			  $sort: String
-			  
-			) {
-			  allOpportunityApplication(page: $page, per_page: $perPage, filters: $filters, sort: $sort) {
-				...ApplicationList_list
-			  }
-			}
-			
-			fragment ApplicationList_list on OpportunityApplicationList {
-			  data {
-				status
-				standards{
-				  constant_name
-				  matching_with_opportunity
-				
-				}
-				
-				date_realized 
-				opportunity {
-				  id
-				  title 
-				  programmes {
-					short_name_display
-					id
-				  }
-				  host_lc {
-					name 
-					id
-				  }
-				  home_mc {
-					name 
-					id
-				  }
-				}
-				person {
-				  id
-				  full_name 
-				  email
-				  phone 
-				  home_lc {
-					name 
-					id
-				  }
-				  home_mc {
-					name 
-					id
-				  }
-				}
-				id
-				
-				created_at 
-				experience_end_date
-				experience_start_date 
-			  }
-			  paging {
-				total_pages
-				current_page
-				total_items
-			  }
-			}`
-
-			var variable = {
-				"page": 1,
-				"perPage": 30,
-				"filters": {
-					"for": "people",
-					"status": "realized"
-				},
-				  "sort":""
-			}
-
-			var jsondata = {
-				'query':query,
-				'variable':variable
-			}
-
-			$http.post(url_graphql,jsondata).success( function(res){
-				console.log(res)
-			})
-
-
-
-		}
-
-			
-			
-
-		
 		var access_token = $scope.access_token;
 		var start_date = document.getElementById("fecha_in").value;
 		var end_date = document.getElementById("fecha_out").value;
@@ -115,7 +9,7 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 
 		spinner_up();
 
-		//MC ECO
+		//MC ACTUS
 		if(!start_date && !end_date){
 			start_date = '2017-08-01'; //AÑO-MES-DÍA
 			var today = new Date();
@@ -189,9 +83,6 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 								lc = res.data[j].person.home_lc.name;
 								country = res.data[j].person.home_lc.country; //SOLO PARA iCX
 							}
-							
-							testgraphql(access_token)
-							
 
 							people_expa.push({
 								//"name": res.data[j].first_name,
@@ -205,7 +96,7 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 								"lc": res.data[j].opportunity.office === null ? '': res.data[j].opportunity.office.name,
 								"country": country,
 								"expa_link": 'https://experience.aiesec.org/#/people/' + res.data[j].person.id,
-								"status": res.data[j].status === null ? '' : res.data[j].status,								
+								"status": res.data[j].status === null ? '' : res.data[j].status
 							});
 						};
 
@@ -239,7 +130,6 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 			$('#preloader').delay(300).fadeIn('slow'); // will fade out the white DIV that covers the website.
 			$('body').delay(300).css({'overflow':'hidden'});
 		}
-		
 
 	}
 }])
