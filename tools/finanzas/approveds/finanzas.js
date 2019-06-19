@@ -3,88 +3,83 @@ var app = angular.module('finanzas', []);
 
 app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 	$scope.go = function() {
-		function get_certificate (app_id, access_token){
-			$http.get("https://gis-api.aiesec.org/v2/applications/"+app_id+"?access_token="+access_token).
-							success(function (resp){
-								console.log(resp)
-								return resp
-							})
-		}
+		
 
 		//graphql
 		function testgraphql(access_token){
 			var url_graphql = "https://gis-api.aiesec.org/graphql?access_token=" + access_token
-			
+			console.log(access_token + " dentro da função query")
 			var query = `
 			query ApplicationIndexQuery(
-			  $page: Int
-			  $perPage: Int
-			  $filters: ApplicationFilter
-			  $sort: String
+				$page: Int
+				$perPage: Int
+				$filters: ApplicationFilter
+				$sort: String
+				
+			  ) {
+				allOpportunityApplication(page: $page, per_page: $perPage, filters: $filters, sort: $sort) {
+				  ...ApplicationList_list
+				}
+			  }
 			  
-			) {
-			  allOpportunityApplication(page: $page, per_page: $perPage, filters: $filters, sort: $sort) {
-				...ApplicationList_list
-			  }
-			}
-			
-			fragment ApplicationList_list on OpportunityApplicationList {
-			  data {
-				status
-				standards{
-				  constant_name
-				  matching_with_opportunity
-				
-				}
-				
-				date_realized 
-				opportunity {
+			  fragment ApplicationList_list on OpportunityApplicationList {
+				data {
+				  status    
+				  date_realized 
+				  opportunity {
+					id
+					title 
+					programmes {
+					  short_name_display
+					  id
+					}
+					host_lc {
+					  name 
+					  id
+					}
+					home_mc {
+					  name 
+					  id
+					}
+				  }
+				  person {
+					id
+					full_name 
+					email
+					phone 
+					home_lc {
+					  name 
+					  id
+					}
+					home_mc {
+					  name 
+					  id
+					}
+				  }
 				  id
-				  title 
-				  programmes {
-					short_name_display
-					id
+				  standards{
+					constant_name
+					matching_with_opportunity
+					  
 				  }
-				  host_lc {
-					name 
-					id
-				  }
-				  home_mc {
-					name 
-					id
-				  }
+				  
+				  created_at 
+				  experience_end_date
+				  experience_start_date 
 				}
-				person {
-				  id
-				  full_name 
-				  email
-				  phone 
-				  home_lc {
-					name 
-					id
-				  }
-				  home_mc {
-					name 
-					id
-				  }
-				}
-				id
 				
-				created_at 
-				experience_end_date
-				experience_start_date 
-			  }
-			  paging {
-				total_pages
-				current_page
-				total_items
-			  }
-			}`
+				paging {
+				  total_pages
+				  current_page
+				  total_items
+				}
+			  }`
 
-			var variable = {
+			var variables_query = {
 				"page": 1,
-				"perPage": 30,
+				"perPage": 100,
 				"filters": {
+					"programmes": 1,
 					"for": "people",
 					"status": "realized"
 				},
@@ -93,7 +88,7 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 
 			var jsondata = {
 				'query':query,
-				'variable':variable
+				'variables':variables_query
 			}
 
 			$http.post(url_graphql,jsondata).success( function(res){
@@ -104,20 +99,17 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 
 		}
 
-			
-			
-
-		
 		var access_token = $scope.access_token;
 		var start_date = document.getElementById("fecha_in").value;
 		var end_date = document.getElementById("fecha_out").value;
 		var programa = document.getElementById("programa").value;
-
+		testgraphql(access_token)
+		console.log(access_token + " depois de pegar no html")
 		spinner_up();
 
 		//MC ECO
 		if(!start_date && !end_date){
-			start_date = '2017-08-01'; //AÑO-MES-DÍA
+			start_date = '2018-08-01'; //AÑO-MES-DÍA
 			var today = new Date();
 			var dd = today.getDate();
 			var mm = today.getMonth()+1; //January is 0!
@@ -190,7 +182,7 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 								country = res.data[j].person.home_lc.country; //SOLO PARA iCX
 							}
 							
-							testgraphql(access_token)
+							
 							
 
 							people_expa.push({
