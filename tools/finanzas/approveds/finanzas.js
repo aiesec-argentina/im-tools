@@ -76,18 +76,17 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 				  total_items
 				}
 			  }`
-
+			  
 			var variables_query = {
-				"page": programa.id,
+				"page": 1,
 				"perPage": 50,
 				"filters": {
 					"date_approved":{
 						"from":date_in,
 						"to":date_out
 					},
-					"programmes": 1,
-					"for": programa.area,
-					"status": "approved"
+					"programmes": programa.id,
+					"for": programa.area
 				},
 				  "sort":""
 			}
@@ -105,7 +104,7 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 
 		}
 
-		var access_token = $scope.access_token;
+		var access_token = document.getElementById("access_token").value;
 		var start_date = document.getElementById("fecha_in").value;
 		var end_date = document.getElementById("fecha_out").value;
 		var programa = document.getElementById("programa").value;
