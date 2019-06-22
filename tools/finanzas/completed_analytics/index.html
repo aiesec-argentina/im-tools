@@ -11,8 +11,13 @@
 </head>
 <body ng-controller="Analytics">
 	<main>
+			<div class="help-text"> Como funciona?
+					<span class="help-text-banner">1. Elegí las fechas de início y fin para el análisis<br>2. El campo "Token" probablemente ya estará lleno, si no, recargá esta página<br>3. Elegí el producto a ser analisado.<br>4. Clicá en ANALYZE<br><br>El analisis parte de una consulta en el sistema filtrando las fechas de RE que fueron selecionadas.<br><br>Después de cargado, podés ordenar como quieras clicando en los titulos<br><br>Obs:. La velocidad de tu internet puede interferir en la carga de la información.</span>
+				</div>
 		<section class="container">
+				
 			<form class="row">
+				
 				<div class="input-field col s6 m2 l2">
 					<input placeholder="Fecha de Inicio" type="date" class="datepicker-in" name="fecha_in" id="fecha_in">
 					<label for="access_token">From</label>
@@ -41,7 +46,7 @@
         		</div>
 			</form>
 			<div id="spinnerContainer" class="spinner"></div>
-			<div id="loading-txt" align="center" font-size="40px">Teste</div>
+			<div id="loading-txt" align="center" font-size="40px"></div>
 		</section>
 
 		<section class="fluid-container">			
@@ -53,13 +58,12 @@
 						<thead>
 							
 							<tr>
-								<th>LC</th>
-								<th>#RE</th>
-								<th>Still RE</th>
-								<th>#FI</th>
-								<th>#Filled</th>
-								<th>#CO</th>
-								<th>%FIN-CO</th>
+								<th>LC <span class="help-text-banner"> Comité Local</span></th>
+								<th>#RE<span class="help-text-banner"> Número de realizaciones que contemplan en las fechas elegidas</span></th>
+								<th>Still RE<span class="help-text-banner"> Número de personas que están en RE en ese momento que contemplan en las fechas elegidas</span></th>
+								<th>#FI<span class="help-text-banner"> Número de finisheds que contemplan en las fechas elegidas</span></th>
+								<th>#CO<span class="help-text-banner"> Número de completeds que contemplan en las fechas elegidas</span></th>
+								<th>%FIN-CO<span class="help-text-banner"> Conversión de finished a completed, basado en las fechas elegidas</span></th>
 							</tr>
 						</thead>
 						<tbody id="table_apd_body">

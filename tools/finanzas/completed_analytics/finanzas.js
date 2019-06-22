@@ -102,7 +102,7 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 		{
 			index:8,
 			id: 1759,
-			name: 'San Juan',
+			name: 'San Juan Argentina',
 			n_re: 0,
 			s_re: 0,
 			n_fi: 0,
@@ -138,7 +138,7 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 		{
 			index:11,
 			id: 1067,
-			name: 'Rosario',
+			name: 'Rosario (Argentina)',
 			n_re: 0,
 			s_re: 0,
 			n_fi: 0,
@@ -242,7 +242,7 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 				return (actual_item/total_items);
 			}
 		};
-		document.getElementById('loading-txt').innerHTML = `<div align="center"> <p style="font-size:40px; font-weight:bold">Loading Data${(loading.porcentaje(loading.actual_item,loading.total_items))*100}%</p></div>`
+		document.getElementById('loading-txt').innerHTML = `<div align="center"> <p style="font-size:40px; font-weight:bold">Loading Data ${(loading.porcentaje(loading.actual_item,loading.total_items))*100}%</p></div>`
 		var opts = {
 			lines: 13, // The number of lines to draw
 			length: 23, // The length of each line
@@ -377,6 +377,7 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 		var end_date = document.getElementById("fecha_out").value;
 		var programa = document.getElementById("programa").value;
 
+		{
 		//oGV -GraphQL
 		if(programa == '1'){
 			programa_gql = {
@@ -425,7 +426,7 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 				'shortname': "iGE"
 			}
 		}
-
+		}
 		//filtering LC
 		function filterLC(array,lc,programa){
 			array_result = []
@@ -443,7 +444,7 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 		}
 		//getting #RE
 		function getRE(array){
-			return array.length()
+			return array.length
 		}
 		//getting Still RE
 		function getStillRE(array){
@@ -454,7 +455,7 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 
 				return fecha_fi.getTime() >= today.getTime()
 			}) 
-			return array_result.length()
+			return array_result.length
 		}
 		//getting #FIN
 		function getFIN(array){
@@ -465,7 +466,7 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 
 				return fecha_fi.getTime() < today.getTime()
 			}) 
-			return array_result.length()
+			return array_result.length
 		}
 		//getting #CO
 		function getCO(array){
@@ -475,10 +476,11 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 				today = new Date(today.getFullYear() + '-'+ String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0'))
 
 				return fecha_fi.getTime() < today.getTime()
-			}).filter((e)=>{
-				return e.status = "completed"
 			})
-			return array_result.length()
+			array_result = array_result.filter((e)=>{
+				return e.status == "completed"
+			})
+			return array_result.length
 		}
 
 
@@ -551,7 +553,7 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 						"debrief_with_aiesec": e.standards[15].option === null ? 'null' :e.standards[15].option ,
 														
 					});
-					document.getElementById('loading-txt').innerHTML = `<div align="center"><p style="font-size:40px; font-weight:bold">Loading ${((loading.porcentaje(loading.actual_item,loading.total_items))*100).toFixed(0)}%</p></div>`
+					document.getElementById('loading-txt').innerHTML = `<div align="center"><p style="font-size:40px; font-weight:bold">Loading Data ${((loading.porcentaje(loading.actual_item,loading.total_items))*100).toFixed(0)}%</p></div>`
 					
 				})
 				
@@ -559,20 +561,19 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 			return people_expa;
 		}	
 		function notZero(n) {
-			n = +n;  // Coerce to number.
-			if (!n) {  // Matches +0, -0, NaN
-			  throw new Error('Invalid dividend ' + n);
-			}
+			 if (n==0) { n=+1 }
 			return n;
 		  }
 		people_expa = await exec_q(access_token,start_date,end_date,programa_gql)
+		document.getElementById('loading-txt').innerHTML = `<div align="center"> <p style="font-size:40px; font-weight:bold">Analyzing...</p></div>`
 		lc.forEach((e)=>{
+			
 			array_lc = filterLC(people_expa,e.name,programa)
 			e.n_re = getRE(array_lc)
 			e.s_re = getStillRE(array_lc)
 			e.n_fi = getFIN(array_lc)
 			e.n_co = getCO(array_lc)
-			c.finco = (e.n_co/notZero(e.n_fi)).toFixed(2)
+			e.c_finco = ((e.n_co/notZero(e.n_fi))*100).toFixed(2)
 		})
 
 
@@ -580,6 +581,9 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 		$scope.$apply()
 						
 		spinner.stop()
+		$('#table_apd').DataTable({
+			"paging": false
+		})
 		document.getElementById('loading-txt').innerHTML = ''
 		
 
