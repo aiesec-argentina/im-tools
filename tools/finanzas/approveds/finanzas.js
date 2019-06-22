@@ -1,5 +1,61 @@
 var app = angular.module('finanzas', []);
 
+function setProgramaGraphQL(programa) {
+	switch(programa){
+		case "1":
+			return {
+				'id': 1,
+				'area': "people",
+				'application': "person_committee",
+				'shortname': "oGV"
+			}
+			break;
+		case "2":
+			return {
+				'id': 2,
+				'area': "people",
+				'application': "person_committee",
+				'shortname': "oGT"
+			}
+			break;
+		case "3":
+			return {
+				'id': 5,
+				'area': "people",
+				'application': "person_committee",
+				'shortname': "oGE"
+			}
+			break;
+		case "4":
+			return {
+				'id': 1,
+				'area': "opportunities",
+				'application': "opportunity_committee",
+				'shortname': "iGV"
+			}
+			break;
+		case "5":
+			return {
+				'id': 2,
+				'area': "opportunities",
+				'application': "opportunity_committee",
+				'shortname': "iGT"
+			}
+			break;
+		default:
+			return {
+				'id': 5,
+				'area': "opportunities",
+				'application': "opportunity_committee",
+				'shortname': "iGE"
+			}
+			break;
+	}
+}
+
+function getOptionFilters(programa, start_date, end_date, resultsPerPage){
+	return '&filters%5Bdate_approved%5Bfrom%5D%5D=' + start_date + '&filters%5Bdate_approved%5Bto%5D%5D='+ end_date + '&filters%5B' + programa.application +'%5D=1535&filters%5Bprogrammes%5D%5B%5D=' + programa.id + '&per_page=' + resultsPerPage;
+}
 
 app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 	$scope.go = function() {
@@ -79,7 +135,7 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 			  
 			var variables_query = {
 				"page": 1,
-				"perPage": 50,
+				"perPage": 100,
 				"filters": {
 					"date_approved":{
 						"from":date_in,
@@ -108,55 +164,7 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 		var start_date = document.getElementById("fecha_in").value;
 		var end_date = document.getElementById("fecha_out").value;
 		var programa = document.getElementById("programa").value;
-
-		//oGV -GraphQL
-		if(programa == '1'){
-			programa_gql = {
-				'id': 1,
-				'area': "people",
-				'shortname': "oGV"
-			}
-		}
-		//oGT -GraphQL
-		else if(programa == '2'){
-			programa_gql = {
-				'id': 2,
-				'area': "people",
-				'shortname': "oGT"
-			}
-		}
-		//oGE -GraphQL
-		else if(programa == '3'){
-			programa_gql = {
-				'id': 5,
-				'area': "people",
-				'shortname': "oGE"
-			}
-		}
-		//iGV -GraphQL
-		else if(programa == '4'){
-			programa_gql = {
-				'id': 1,
-				'area': "opportunities",
-				'shortname': "iGV"
-			}
-		}
-		//iGT -GraphQL
-		else if(programa == '5'){
-			programa_gql = {
-				'id': 2,
-				'area': "opportunities",
-				'shortname': "iGT"
-			}
-		}
-		//iGE -GraphQL
-		else {
-			programa_gql = {
-				'id': 5,
-				'area': "opportunities",
-				'shortname': "iGE"
-			}
-		}
+		var programa_gql = setProgramaGraphQL(programa);
 
 		testgraphql(access_token,start_date,end_date,programa_gql)
 		
@@ -186,28 +194,10 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 			uri_point: 'applications.json?access_token=',		
 			filters: '&filters%5Bdate_approved%5Bfrom%5D%5D=' + start_date + '&filters%5Bdate_approved%5Bto%5D%5D=' + end_date +'&filters%5B_committee%5D=1535&filters%5Bprogrammes%5D%5B%5D=1&per_page=200',
 			sub_filter: '&page='
-		};		
-
-		//oGV
- 		if(programa == '1'){
-			options.filters = '&filters%5Bdate_approved%5Bfrom%5D%5D=' + start_date + '&filters%5Bdate_approved%5Bto%5D%5D='+ end_date + '&filters%5Bperson_committee%5D=1535&filters%5Bprogrammes%5D%5B%5D=1&per_page=200'
-		}//oGT
-		else if(programa == '2'){
-			options.filters = '&filters%5Bdate_approved%5Bfrom%5D%5D=' + start_date + '&filters%5Bdate_approved%5Bto%5D%5D='+ end_date + '&filters%5Bperson_committee%5D=1535&filters%5Bprogrammes%5D%5B%5D=2&per_page=200'	//OGT
-		}//oGE
-		else if(programa == '3'){
-			options.filters = '&filters%5Bdate_approved%5Bfrom%5D%5D=' + start_date + '&filters%5Bdate_approved%5Bto%5D%5D='+ end_date + '&filters%5Bperson_committee%5D=1535&filters%5Bprogrammes%5D%5B%5D=5&per_page=200'	//OGE
-		}//iGV
-		else if(programa == '4'){
-			options.filters = '&filters%5Bdate_approved%5Bfrom%5D%5D=' + start_date + '&filters%5Bdate_approved%5Bto%5D%5D='+ end_date + '&filters%5Bopportunity_committee%5D=1535&filters%5Bprogrammes%5D%5B%5D=1&per_page=200'	//iGV
-		}//iGT
-		else if(programa == '5'){
-			options.filters = '&filters%5Bdate_approved%5Bfrom%5D%5D=' + start_date + '&filters%5Bdate_approved%5Bto%5D%5D='+ end_date + '&filters%5Bopportunity_committee%5D=1535&filters%5Bprogrammes%5D%5B%5D=2&per_page=200'	//iGV
-		}//iGE
-		else{
-			options.filters = '&filters%5Bdate_approved%5Bfrom%5D%5D=' + start_date + '&filters%5Bdate_approved%5Bto%5D%5D='+ end_date + '&filters%5Bopportunity_committee%5D=1535&filters%5Bprogrammes%5D%5B%5D=5&per_page=200'	//iGT
-		}
-
+		};	
+		
+		options.filters = getOptionFilters(programa_gql, start_date, end_date, 100);
+		
 		var people_expa = [];
 		var name_ = "";
 
