@@ -20,3 +20,36 @@ body {
 }
 
 /*Fin Spinner*/
+div.help-text {
+  position: absolute;
+  left:50px;
+  top: 20px;
+  font-weight: bolder;
+  font-family: inherit;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+span.help-text-banner {
+  font-weight: normal;
+  visibility: hidden;
+  width: 200px;
+  background-color: white;
+  color: black;
+  text-align: left;
+  border-radius: 6px;
+  border: 1px solid black;
+  padding: 5px 5px;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+div.help-text:hover span.help-text-banner {
+  visibility: visible;
+}
+th:hover span.help-text-banner {
+  visibility: visible;
+}
+

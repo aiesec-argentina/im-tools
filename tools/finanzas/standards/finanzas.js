@@ -275,6 +275,11 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 		$scope.$apply()
 						
 		spinner.stop()
+		if (!$.fn.DataTable.isDataTable('#table_apd')){
+
+			$('#table_apd').DataTable({
+				"pageLength": 50
+			})}
 		document.getElementById('loading-txt').innerHTML = ''
 		
 

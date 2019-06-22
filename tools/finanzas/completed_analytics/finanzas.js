@@ -581,9 +581,11 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 		$scope.$apply()
 						
 		spinner.stop()
+		if (!$.fn.DataTable.isDataTable('#table_apd')){
+
 		$('#table_apd').DataTable({
 			"paging": false
-		})
+		})}
 		document.getElementById('loading-txt').innerHTML = ''
 		
 
