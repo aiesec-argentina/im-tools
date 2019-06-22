@@ -2,6 +2,238 @@ var app = angular.module('finanzas', []);
 
 
 app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
+	var lc = [
+		{
+			index:0,
+			id: 1675,
+			name: 'Nordeste',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+		{
+			index:1,
+			id: 1249,
+			name: 'Córdoba',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+		{
+			index:2,
+			id: 847,
+			name: 'Buenos Aires',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+		{
+			index:3,
+			id: 278,
+			name: 'La Plata',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+		{
+			index:4,
+			id: 1761,
+			name: 'Tucumán',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+		{
+			index:5,
+			id: 27,
+			name: 'Buenos Aires UBA FCE',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+		{
+			index:6,
+			id: 1678,
+			name: 'Neuquén',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+		{
+			index:7,
+			id: 223,
+			name: 'Buenos Aires USAL',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+		{
+			index:8,
+			id: 1759,
+			name: 'San Juan',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+		{
+			index:9,
+			id: 873,
+			name: 'Mendoza',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+		{
+			index:10,
+			id: 1677,
+			name: 'Salta',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+		{
+			index:11,
+			id: 1067,
+			name: 'Rosario',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+		{
+			index:12,
+			id: 1760,
+			name: 'Santa Fe',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+		{
+			index:13,
+			id: 2290,
+			name: 'LaM',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+		{
+			index:14,
+			id: 2233,
+			name: 'Misiones',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+		{
+			index:15,
+			id: 2405,
+			name: 'Entre Ríos',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+		{
+			index:16,
+			id: 2227,
+			name: 'Santiago del Estero',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+		{
+			index:17,
+			id: 2406,
+			name: 'Río Cuarto',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+		{
+			index:18,
+			id: 2478,
+			name: 'Bahía Blanca',
+			n_re: 0,
+			s_re: 0,
+			n_fi: 0,
+			n_co: 0,
+			c_fifi: 0,
+			c_filco: 0,
+			c_finco: 0
+		},
+	]
+
+
 	$scope.go = async function() {
 		var loading = {
 			total_items: 1,
@@ -10,7 +242,7 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 				return (actual_item/total_items);
 			}
 		};
-		document.getElementById('loading-txt').innerHTML = `<div align="center"> <p style="font-size:40px; font-weight:bold">Loading ${(loading.porcentaje(loading.actual_item,loading.total_items))*100}%</p></div>`
+		document.getElementById('loading-txt').innerHTML = `<div align="center"> <p style="font-size:40px; font-weight:bold">Loading Data${(loading.porcentaje(loading.actual_item,loading.total_items))*100}%</p></div>`
 		var opts = {
 			lines: 13, // The number of lines to draw
 			length: 23, // The length of each line
@@ -194,7 +426,63 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 			}
 		}
 
-		
+		//filtering LC
+		function filterLC(array,lc,programa){
+			array_result = []
+			if (programa == 1 || programa == 2 || programa == 3) {
+				array_result = array.filter((e) =>{
+					return e.home_lc == lc
+				})
+			}
+			if (programa == 4 || programa == 5 || programa == 6) {
+				array_result = array.filter((e) =>{
+					return e.host_lc == lc
+				})
+			}
+			return array_result		
+		}
+		//getting #RE
+		function getRE(array){
+			return array.length()
+		}
+		//getting Still RE
+		function getStillRE(array){
+			array_result = array.filter((e)=>{
+				var fecha_fi = new Date(e.experience_end_date)
+				var today = new Date();
+				today = new Date(today.getFullYear() + '-'+ String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0'))
+
+				return fecha_fi.getTime() >= today.getTime()
+			}) 
+			return array_result.length()
+		}
+		//getting #FIN
+		function getFIN(array){
+			array_result = array.filter((e)=>{
+				var fecha_fi = new Date(e.experience_end_date)
+				var today = new Date();
+				today = new Date(today.getFullYear() + '-'+ String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0'))
+
+				return fecha_fi.getTime() < today.getTime()
+			}) 
+			return array_result.length()
+		}
+		//getting #CO
+		function getCO(array){
+			array_result = array.filter((e)=>{
+				var fecha_fi = new Date(e.experience_end_date)
+				var today = new Date();
+				today = new Date(today.getFullYear() + '-'+ String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0'))
+
+				return fecha_fi.getTime() < today.getTime()
+			}).filter((e)=>{
+				return e.status = "completed"
+			})
+			return array_result.length()
+		}
+
+
+
 
 		//MC ECO
 		if(!start_date && !end_date){
@@ -270,8 +558,25 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 			}
 			return people_expa;
 		}	
+		function notZero(n) {
+			n = +n;  // Coerce to number.
+			if (!n) {  // Matches +0, -0, NaN
+			  throw new Error('Invalid dividend ' + n);
+			}
+			return n;
+		  }
 		people_expa = await exec_q(access_token,start_date,end_date,programa_gql)
-		$scope.people = people_expa
+		lc.forEach((e)=>{
+			array_lc = filterLC(people_expa,e.name,programa)
+			e.n_re = getRE(array_lc)
+			e.s_re = getStillRE(array_lc)
+			e.n_fi = getFIN(array_lc)
+			e.n_co = getCO(array_lc)
+			c.finco = (e.n_co/notZero(e.n_fi)).toFixed(2)
+		})
+
+
+		$scope.people = lc
 		$scope.$apply()
 						
 		spinner.stop()
