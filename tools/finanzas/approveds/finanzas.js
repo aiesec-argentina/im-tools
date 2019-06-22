@@ -53,18 +53,72 @@ function setProgramaGraphQL(programa) {
 	}
 }
 
-function getOptionFilters(programa, start_date, end_date, resultsPerPage){
-	return '&filters%5Bdate_approved%5Bfrom%5D%5D=' + start_date + '&filters%5Bdate_approved%5Bto%5D%5D='+ end_date + '&filters%5B' + programa.application +'%5D=1535&filters%5Bprogrammes%5D%5B%5D=' + programa.id + '&per_page=' + resultsPerPage;
-}
-
 app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 	$scope.go = function() {
+			
+		var paging;
 		
-
 		//graphql
-		function testgraphql(access_token, date_in, date_out, programa){
+		function getPagesCount(access_token, date_in, date_out, programa){
 			var url_graphql = "https://gis-api.aiesec.org/graphql?access_token=" + access_token
 
+			var query = `
+			query ApplicationIndexQuery(
+				$page: Int
+				$perPage: Int
+				$filters: ApplicationFilter
+				$sort: String
+				
+			  ) {
+				allOpportunityApplication(page: $page, per_page: $perPage, filters: $filters, sort: $sort) {
+				  ...ApplicationList_list
+				}
+			  }
+			  
+			  fragment ApplicationList_list on OpportunityApplicationList {
+				paging {
+				  total_pages
+				  current_page
+				  total_items
+				}
+			  }`
+			  
+			var variables_query = {
+				"page": 1,
+				"perPage": 100,
+				"filters": {
+					"date_approved":{
+						"from":date_in,
+						"to":date_out
+					},
+					"programmes": programa.id,
+					"for": programa.area
+				}
+			}
+
+			var jsondata = {
+				'query':query,
+				'variables':variables_query
+			}
+
+			
+			var people_expa = [];
+			
+			return $http.post(url_graphql,jsondata)
+			.success( function(res){
+				console.log("Paging: ");
+				paging = res.data.allOpportunityApplication.paging;
+				console.log(res);				
+			});
+		}
+
+		//graphql
+		function testgraphql(access_token, date_in, date_out, programa, pagesHandler, rowIndex){
+			var url_graphql = "https://gis-api.aiesec.org/graphql?access_token=" + access_token
+			
+			console.log("CurrentPage: " + pagesHandler.current_page + ". TotalPage: " + pagesHandler.total_pages + ". TotalItems: " + pagesHandler.total_items);
+			
+			
 			var query = `
 			query ApplicationIndexQuery(
 				$page: Int
@@ -134,7 +188,7 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 			  }`
 			  
 			var variables_query = {
-				"page": 1,
+				"page": pagesHandler.current_page,
 				"perPage": 100,
 				"filters": {
 					"date_approved":{
@@ -143,21 +197,70 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 					},
 					"programmes": programa.id,
 					"for": programa.area
-				},
-				  "sort":""
+				}
 			}
 
 			var jsondata = {
 				'query':query,
 				'variables':variables_query
 			}
+			
+			var people_expa = [];
+			
+			$http.post(url_graphql,jsondata)
+			.success( function(res){
+				//console.log(res);				
+				res.data.allOpportunityApplication.data.forEach(function(elem){
+					
+					var lc;
+					var country;
+					if(programa.id >= '1' && programa.id <= '3'){
+						$scope.host = '';
+						country_label = true;
+						lc = elem.person.home_lc.name; //SOLO PARA oGX
+						country = elem.opportunity.office === undefined ? '' : elem.opportunity.office.country;
+					} 
+					else {
+						$scope.home = '';
+						lc = elem.person.home_lc.name;
+						country = elem.person.home_lc.country; //SOLO PARA iCX
+					}					
+					
+					rowIndex++;
+					
+					$('#table_apd').DataTable().row.add([
+						rowIndex,
+						elem.person.full_name === null ? '' : elem.person.full_name,
+						elem.person.email === null ? '': elem.person.email,
+						elem.person.home_lc.name === null ? '' : elem.person.home_lc.name,								
+						elem.opportunity.id === null ? '' : elem.opportunity.id,
+						elem.opportunity.title === null ? '' : elem.opportunity.title,
+						lc === null ? '': lc,
+						elem.opportunity.office === undefined ? '': elem.opportunity.office.name,
+						country,
+						'https://expa.aiesec.org/people/' + elem.person.id,
+						elem.status === null ? '' : elem.status,	
+					]);
+				});
+				
+				$('#table_apd').DataTable().draw();
+				
+				if(pagesHandler.current_page < pagesHandler.total_pages){
+					pagesHandler.current_page++;
+					testgraphql(access_token, date_in, date_out, programa, pagesHandler, rowIndex);
+				}
+				
+				if(programa.id >= '1' && programa.id <= '3'){
+					name_ = 'Host Country';
+				}
+				else {
+					name_ = 'Home Country';
+				}
 
-			$http.post(url_graphql,jsondata).success( function(res){
-				console.log(res)
-			})
-
-
-
+				//$scope.name =  { "name": name_ };
+				//$scope.people = people_expa;
+				spinner();
+			});
 		}
 
 		var access_token = document.getElementById("access_token").value;
@@ -165,105 +268,14 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 		var end_date = document.getElementById("fecha_out").value;
 		var programa = document.getElementById("programa").value;
 		var programa_gql = setProgramaGraphQL(programa);
-
-		testgraphql(access_token,start_date,end_date,programa_gql)
+		getPagesCount(access_token,start_date,end_date,programa_gql)
+		.success(function(data) {
+			$('#table_apd').DataTable().clear().draw();
+			testgraphql(access_token,start_date,end_date,programa_gql, paging, 0)			
+		});
+		
 		
 		spinner_up();
-
-		//MC ECO
-		if(!start_date && !end_date){
-			start_date = '2018-08-01'; //AÑO-MES-DÍA
-			var today = new Date();
-			var dd = today.getDate();
-			var mm = today.getMonth()+1; //January is 0!
-			var yyyy = today.getFullYear();
-
-			if(dd<10) {
-	    		dd = '0' + dd
-			} 
-
-			if(mm<10) {
-	    		mm = '0' + mm
-			}
-			end_date = yyyy+'-'+mm+'-'+dd; //HOY
-		}
-
-		//Por defecto oGV
-		var options = {
-			uri_base: 'https://gis-api.aiesec.org/v2/',
-			uri_point: 'applications.json?access_token=',		
-			filters: '&filters%5Bdate_approved%5Bfrom%5D%5D=' + start_date + '&filters%5Bdate_approved%5Bto%5D%5D=' + end_date +'&filters%5B_committee%5D=1535&filters%5Bprogrammes%5D%5B%5D=1&per_page=200',
-			sub_filter: '&page='
-		};	
-		
-		options.filters = getOptionFilters(programa_gql, start_date, end_date, 100);
-		
-		var people_expa = [];
-		var name_ = "";
-
-		$http.get(options.uri_base + options.uri_point + access_token + options.filters).
-		success(function (res) {
-			add(res.paging.total_pages);
-		}).error(
-			function (error) {
-				console.log("Error!!");
-		});
-
-		function add (pag) {
-			for (var i = 0; i <= pag - 1; i++) {
-				$http.get(options.uri_base + options.uri_point + access_token + options.filters + options.sub_filter + (i+1) ).
-	    			success(function(res) {
-						for (var j =  0; j <= res.data.length - 1; j++) {
-							var lc;
-							var country;
-							if(programa == '1' || programa == '2' || programa == '3'){
-								$scope.host = '';
-								country_label = true;
-								lc = res.data[j].person.home_lc.name; //SOLO PARA oGX
-								country = res.data[j].opportunity.office === null ? '' : res.data[j].opportunity.office.country;
-							} else {
-								$scope.home = '';
-								lc = res.data[j].person.home_lc.name;
-								country = res.data[j].person.home_lc.country; //SOLO PARA iCX
-							}
-							
-							
-							
-
-							people_expa.push({
-								//"name": res.data[j].first_name,
-								"name": res.data[j].person.first_name === null ? '' : res.data[j].person.first_name ,
-								"last_name": res.data[j].person.last_name === null ? '' : res.data[j].person.last_name,
-								"email": res.data[j].person.email === null ? '':res.data[j].person.email,
-								"home_lc": res.data[j].person.home_lc.name === null ? '' : res.data[j].person.home_lc.name,								
-								"tn_id": res.data[j].opportunity.id === null ? '' : res.data[j].opportunity.id,
-								"tn_name": res.data[j].opportunity.title === null ? '' : res.data[j].opportunity.title,
-								"home_lc": lc === null ? '': lc,
-								"lc": res.data[j].opportunity.office === null ? '': res.data[j].opportunity.office.name,
-								"country": country,
-								"expa_link": 'https://experience.aiesec.org/#/people/' + res.data[j].person.id,
-								"status": res.data[j].status === null ? '' : res.data[j].status,								
-							});
-						};
-
-						if(programa == '1' || programa == '2' || programa == '3'){
-							name_ = 'Host Country';
-						} else {
-							name_ = 'Home Country';
-						}
-
-						$scope.name =  { "name": name_ };
-						$scope.people = people_expa;
-						spinner();
-	    			}).
-	    			error(
-	    				function (error) {
-							spinner();
-							console.log("Error!!");
-						}
-					);
-			};
-		}
 
 		function spinner () {
 			$('#status').fadeOut(); // will first fade out the loading animation
@@ -276,7 +288,12 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 			$('#preloader').delay(300).fadeIn('slow'); // will fade out the white DIV that covers the website.
 			$('body').delay(300).css({'overflow':'hidden'});
 		}
-		
-
 	}
 }])
+
+$(document).ready(function() {	
+	$('#table_apd').DataTable( {
+		dom: 'Bfrtip',
+		buttons: [ 'copy', 'excel', 'pdf', 'colvis']
+	});		
+})

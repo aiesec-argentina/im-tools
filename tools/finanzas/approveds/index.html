@@ -105,8 +105,7 @@
 						<thead>
 							<tr>
 								<th>#</th>
-								<th>Nombre</th>
-								<th>Apellido</th>
+								<th>Nombre y Apellido</th>
 								<th>Email</th>
 								<th>OPP ID</th>
 								<th>OPP Nombres</th>
@@ -118,11 +117,10 @@
 								
 							</tr>
 						</thead>
-						<tbody>
+						<tbody id="tableBody">
 							<tr ng-repeat="p in people">
 								<th>{{$index + 1}}</th>
 								<th>{{p.name}}</th>
-								<th>{{p.last_name}}</th>
 								<th>{{p.email}}</th>
 								<th><a href="https://experience.aiesec.org/#/opportunities/{{p.tn_id}}">{{p.tn_id}}</a></th>
 								<th>{{p.tn_name}}</th>
