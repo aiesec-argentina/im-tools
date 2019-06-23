@@ -54,6 +54,13 @@ function setProgramaGraphQL(programa) {
 }
 
 var requestKey;
+var progressBar = { value: 0 };
+var bar;
+function setProgressBar(totalItems, perPage) {
+	progressBar.value += perPage;
+	let currentPercentaje = (progressBar.value * 100 / totalItems);
+	bar.set(currentPercentaje)
+}
 
 var query = `query ApplicationIndexQuery(
 				$page: Int
@@ -122,7 +129,7 @@ var query = `query ApplicationIndexQuery(
 				}
 			}`
 
-function loadTableDataOnFirstRequest($scope, data, rowIndex, programa, currentKey) {
+function loadTableDataOnFirstRequest($scope, data, rowIndex, programa) {
 
 	data.forEach(function (elem) {
 		var lc;
@@ -146,7 +153,7 @@ function loadTableDataOnFirstRequest($scope, data, rowIndex, programa, currentKe
 
 		$('#table_apd').DataTable().row.add([
 			rowIndex.index,
-			elem.person.full_name === null ? '' : elem.person.full_name,
+			elem.person.full_name === null ? '' : '<div style="overflow:hidden; white-space: nowrap; text-overflow: ellipsis;">' + elem.person.full_name + '</div>',
 			apdDate,
 			elem.person.email === null ? '' : elem.person.email,
 			elem.opportunity.id === null ? '' : elem.opportunity.id,
@@ -154,13 +161,14 @@ function loadTableDataOnFirstRequest($scope, data, rowIndex, programa, currentKe
 			lc === null ? '' : lc,
 			elem.opportunity.home_mc.name,
 			//elem.opportunity.office === undefined ? '' : elem.opportunity.office.name,
-			country,
+			elem.opportunity.host_lc.name,
 			'https://expa.aiesec.org/people/' + elem.person.id,
 			elem.status === null ? '' : elem.status,
 		]);
 	});
 
 	$('#table_apd').DataTable().draw();
+
 }
 
 app.controller('Analytics', ['$scope', '$http', function ($scope, $http) {
@@ -204,16 +212,21 @@ app.controller('Analytics', ['$scope', '$http', function ($scope, $http) {
 						return;
 					}
 
-					var data = res.data.allOpportunityApplication.data;
-					var pagesHandler = res.data.allOpportunityApplication.paging;
+					let data = res.data.allOpportunityApplication.data;
+					let totalPages = res.data.allOpportunityApplication.paging.total_pages;
+					let itemsPerPage = jsondata.variables.perPage;
 
-					loadTableDataOnFirstRequest($scope, data, rowIndex, programa, currentKey);
 
-					if (pagesHandler.total_pages > 1) {
-						for (let i = 2; i <= pagesHandler.total_pages; i++) {
+					loadTableDataOnFirstRequest($scope, data, rowIndex, programa);
+					setProgressBar(res.data.allOpportunityApplication.paging.total_items, itemsPerPage);
+
+					if (totalPages > 1) {
+						for (let i = 2; i <= totalPages; i++) {
 							jsondata.variables.page = i;
 							$http.post(url_graphql, jsondata).success(function (result) {
-								loadTableDataOnFirstRequest($scope, result.data.allOpportunityApplication.data, rowIndex, programa, currentKey);
+								let data = result.data.allOpportunityApplication.data;
+								loadTableDataOnFirstRequest($scope, data, rowIndex, programa);
+								setProgressBar(result.data.allOpportunityApplication.paging.total_items, itemsPerPage);
 							});
 						}
 					}
@@ -232,6 +245,8 @@ app.controller('Analytics', ['$scope', '$http', function ($scope, $http) {
 		}
 
 		$('#table_apd').DataTable().clear().draw();
+		progressBar.value = 0;
+		setProgressBar(1, 0);
 		testgraphql(access_token, start_date, end_date, programa_gql, { index: 0 })
 
 		spinner_up();
@@ -252,29 +267,29 @@ app.controller('Analytics', ['$scope', '$http', function ($scope, $http) {
 
 $(document).ready(function () {
 	$('#table_apd').DataTable({
-		dom: 'Bfrtip',
+		dom: "<'row'<'col-sm-2'i><'col-sm-1.progressBar'><'col-sm-1'B><'col-sm-4'f><'col-sm-4'p>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12'fp>>",
 		buttons: ['copy', 'excel', 'pdf', 'colvis'],
 		columnDefs: [
 			{
 				targets: 0, visible: true, searchable: false, orderable: false, width: '1%'
 			},  // Columna index.
 			{
-				targets: 1, visible: true, searchable: true, orderable: true, width: '1%'
+				targets: 1, visible: true, searchable: true, orderable: true, width: '20%'
 			},  // Columna Nombre y apellido.
 			{
-				targets: 2, orderable: true, visible: true, width: '1%', type: 'date-eu-pre'
+				targets: 2, orderable: true, visible: true, width: '10%', type: 'date-eu-pre'
 			},  // Columna Fecha APD.
 			{
 				targets: 3, orderable: true, visible: true, width: '1%'
 			},  // Columna Email.
 			{
-				targets: 4, visible: true, width: '1%'
+				targets: 4, visible: true, width: '10%'
 			},  // Columna OPP ID.
 			{
-				targets: 5, orderable: true, visible: true, width: '1%'
+				targets: 5, orderable: true, visible: true, width: '15%'
 			},  // Columna OPP Nombres.
 			{
-				targets: 6, visible: false, width: '1%'
+				targets: 6, visible: true, width: '10%'
 			},  // Columna Home LC.
 			{
 				targets: 5, orderable: true, visible: true, width: '1%'
@@ -290,4 +305,7 @@ $(document).ready(function () {
 			},  // Columna Status.
 		],
 	});
+
+	$("div.progressBar").html('<div id="loadingBar" class="ldBar" data-preset="energy"></div>');
+	bar = new ldBar('#loadingBar');
 })

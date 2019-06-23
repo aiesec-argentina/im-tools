@@ -6,9 +6,10 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
-	<link rel="stylesheet" href="../../../css/jquery.dataTables.min.css">
 	<link rel="stylesheet" href="../../../css/datatables.css">
+	<link rel="stylesheet" href="../../../css/jquery.dataTables.min.css">
 	<link rel="stylesheet" href="../../../css/buttons.jqueryui.min.css">
+	<link rel="stylesheet" href="../../../css/loading-bar.css">
 	<link rel="stylesheet" type="text/css" href="main.css">
 </head>
 
@@ -72,17 +73,18 @@
 		<section class="container">
 			<form class="row">
 				<div class="input-field col s6 m2 l2">
-					<input placeholder="Fecha de Inicio" type="date" class="datepicker-in" name="fecha_in"
-						id="fecha_in">
+					<input placeholder="Fecha de Inicio" type="date" class="datepicker-in"
+						name="fecha_in" id="fecha_in">
 					<label for="access_token">From</label>
 				</div>
 				<div class="input-field col s6 m2 l2">
-					<input placeholder="Fecha de Fin" type="date" class="datepicker-out" name="fecha_out"
-						id="fecha_out">
+					<input placeholder="Fecha de Fin" type="date" class="datepicker-out"
+						name="fecha_out" id="fecha_out">
 					<label for="access_token">To</label>
 				</div>
 				<div class="input-field col s12 m3 l3">
-					<input id="access_token" ng-model="access_token" name="access_token" type="text" value="">
+					<input id="access_token" ng-model="access_token" name="access_token" type="text"
+						value="">
 					<label for="access_token">Token</label>
 				</div>
 				<div class="input-field col s12 m2 l2">
@@ -104,6 +106,7 @@
 		</section>
 
 		<section class="fluid-container">
+
 			<article class="row">
 				<div class="col-md-12">
 					<!--<table class="table table-stripped">-->
@@ -130,7 +133,8 @@
 								<th>{{p.name}}</th>
 								<th>{{p.dateAPD}}</th>
 								<th>{{p.email}}</th>
-								<th><a href="https://expa.aiesec.org/opportunities/{{p.tn_id}}">{{p.tn_id}}</a></th>
+								<th><a href="https://expa.aiesec.org/opportunities/{{p.tn_id}}">{{p.tn_id}}</a>
+								</th>
 								<th>{{p.tn_name}}</th>
 								<th>{{p.home_lc}}</th>
 								<th>{{p.country}}</th>
@@ -152,6 +156,9 @@
 	<script src="../../../js/jquery.dataTables.min.js"></script>
 	<script src="../../../js/dataTables.buttons.min.js"></script>
 	<script src="../../../js/buttons.colVis.min.js"></script>
+	<script src="../../../js/dataTables.buttons.min.js"></script>
+	<script src="../../../js/buttons.colVis.min.js"></script>
+	<script src="../../../js/loading-bar.js"></script>
 	<script type="text/javascript" src="finanzas.js"></script>
 
 	<!-- Compiled and minified JavaScript -->
