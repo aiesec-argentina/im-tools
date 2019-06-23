@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
 	<link rel="stylesheet" href="../../../css/jquery.dataTables.min.css">
+	<link rel="stylesheet" href="../../../css/datatables.css">
 	<link rel="stylesheet" href="../../../css/buttons.jqueryui.min.css">
 	<link rel="stylesheet" type="text/css" href="main.css">
 </head>
@@ -117,12 +118,12 @@
 								
 							</tr>
 						</thead>
-						<tbody id="tableBody">
+						<tbody>
 							<tr ng-repeat="p in people">
 								<th>{{$index + 1}}</th>
 								<th>{{p.name}}</th>
 								<th>{{p.email}}</th>
-								<th><a href="https://experience.aiesec.org/#/opportunities/{{p.tn_id}}">{{p.tn_id}}</a></th>
+								<th><a href="https://expa.aiesec.org/opportunities/{{p.tn_id}}">{{p.tn_id}}</a></th>
 								<th>{{p.tn_name}}</th>
 								<th>{{p.home_lc}}</th>
 								<th>{{p.country}}</th>
