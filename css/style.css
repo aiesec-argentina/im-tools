@@ -39,13 +39,17 @@ p {
   }
 }
 
+.img-background {
+  -webkit-filter: brightness(40%)
+}
+
 .maintance-section{
-  background-color: #ffc52b;
+  background-color: #2b78fc;
   padding: 100px;
 }
 
 #maintance-title{
-  color: #000000;
+  color: #fff;
   font-weight: bolder;
   font-size:60px;
   text-align: center
@@ -53,6 +57,7 @@ p {
 
 #maintance-text{
   text-align: center;
+  color: #fff
 
 }
 #maintance-img{
