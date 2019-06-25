@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html ng-app="finanzas">
+<head>
+	<title>Standards</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
+	<link rel="stylesheet" href="../../../css/jquery.dataTables.min.css">
+	<link rel="stylesheet" href="../../../css/spin.css">
+	<link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body ng-controller="Analytics">
+	<main>
+		<section style="margin: auto; padding: 100px;">
+				
+			<form class="row">
+				
+				<div class="input-field col s6 m2 l2">
+					<input placeholder="EP ID" type="text" name="ep_id" id="ep_id">
+					<label for="access_token">EP ID</label>
+				</div>
+				<div class="input-field col s6 m2 l2">
+					<input placeholder="Man ID" type="text" name="man_id" id="man_id">
+					<label for="access_token">Man ID</label>
+				</div>
+				<div class="input-field col s12 m3 l3">
+					<input id="access_token" ng-model="access_token" name="access_token" type="hidden"  value="">
+					<label for="access_token"></label>
+				</div>	
+        		<div class="input-field col s12 m2 l2">
+        			<button ng-click='go()' class="btn waves-effect waves-light" type="submit" name="action">ASSIGN MANAGER</button>	        			
+        		</div>
+			</form>
+			<div id="spinnerContainer" class="spinner"></div>
+			<div id="loading-txt" align="center" font-size="50px"></div>
+		</section>
+
+		
+	</main>
+
+	<!-- SCRIPTS -->
+	<script src="https://code.jquery.com/jquery-2.2.2.js" integrity="sha256-4/zUCqiq0kqxhZIyp4G0Gk+AOtCJsY1TA00k5ClsZYE=" crossorigin="anonymous"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+	<script src="../../../js/jquery.dataTables.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.js"></script>
+	<script type="text/javascript" src="finanzas.js"></script>
+
+	<!-- Compiled and minified JavaScript -->
+  		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
+  		<script>
+		
+		const getToken = () =>  {
+			return $.get("http://blog.aiesecargentina.org:5000");
+			};
+	
+		$(window).load(async function(){
+			
+			var token = await getToken()
+			document.getElementById("access_token").value = token
+			console.log(document.getElementById("access_token").value)
+
+		})
+
+	    $(document).ready( function() {
+			$('.datepicker-in').pickadate({
+				format: 'yyyy-mm-dd',
+				formatSubmit: 'yyyy-mm-dd',
+    			selectMonths: true, // Creates a dropdown to control month
+    			selectYears: 15, // Creates a dropdown of 15 years to control year
+    			max: true
+  			});
+  			$('.datepicker-out').pickadate({
+  				format: 'yyyy-mm-dd',
+  				formatSubmit: 'yyyy-mm-dd',
+    			selectMonths: true, // Creates a dropdown to control month
+    			selectYears: 15, // Creates a dropdown of 15 years to control year
+    			max: true
+			  });
+			
+	        $('#status').fadeOut(); // will first fade out the loading animation
+			$('#preloader').delay(1).fadeOut('slow'); // will fade out the white DIV that covers the website.
+			$('body').delay(1).css({'overflow':'visible'});
+
+			$('select').material_select();
+  			
+		});
+		 
+  		</script>
+</body>
+</html>
