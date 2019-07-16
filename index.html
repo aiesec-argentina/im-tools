@@ -47,6 +47,9 @@
     </div>
     <div class="parallax img-background"><img src="img/imhub3.jpg" alt="Unsplashed background img 1"></div>
   </div>
+  <div class="dashboard"></div>
+    <iframe id="dashboard-arg" src="https://datastudio.google.com/embed/u/0/reporting/1zIoREHtdxqwTj4-ej-90jG_CP16ERTOA/page/VgOu" frameborder="1" style="border:0; width:100vw; height:150vh" allowfullscreen=""></iframe>
+  </div>
   <div class="maintance-section">
     
     <h1 id="maintance-title">WE ARE</h1>
@@ -189,6 +192,13 @@
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
   <script src="js/init.js"></script>
+  <script>
+   window.setInterval("reloadIFrame();", 600000);
+       
+       function reloadIFrame() {
+           document.getElementById("dashboard-arg").src="https://datastudio.google.com/embed/u/0/reporting/1zIoREHtdxqwTj4-ej-90jG_CP16ERTOA/page/VgOu";
+       }
+   </script>
 
   </body>
 </html>

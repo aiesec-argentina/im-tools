@@ -44,6 +44,7 @@ p {
 }
 
 .maintance-section{
+  display: none;
   background-color: #2b78fc;
   padding: 100px;
 }
