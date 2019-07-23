@@ -89,6 +89,9 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 				  id
 				  standards{
 					constant_name
+					standard_option{
+						option
+					}
 					option
 					  
 				  }
@@ -194,7 +197,14 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 			}
 		}
 
+		//count standards
+		function count_standards(std, total){
+			if(std.standard_option!=null){
+				total = total + 1
+			}
+		}
 		
+
 
 		//MC ECO
 		if(!start_date && !end_date){
@@ -231,6 +241,12 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 				console.log(responses)
 				responses.data.allOpportunityApplication.data.forEach((e)=>{
 					loading.actual_item++;
+					var std_answers = 0
+					e.standards.forEach((std)=>{
+						if(std.standard_option!=null){
+							std_answers = std_answers + 1 
+						}
+					})
 					people_expa.push({
 						
 						"status": e.status === null ? '' : e.status,	
@@ -245,22 +261,23 @@ app.controller('Analytics', ['$scope', '$http', function ($scope,$http) {
 						"host_mc":  e.opportunity.home_mc.name === null ? '' : e.opportunity.home_mc.name,
 						"experience_start_date": e.experience_start_date.substring(0,10),
 						"experience_end_date": e.experience_end_date.substring(0,10),
-						"personal_goal_setting": e.standards[0].option === null ? 'null' : e.standards[0].option,
-						"outgoing_preparation": e.standards[1].option === null ? 'null' : e.standards[1].option,
-						"expectation_setting": e.standards[2].option === null ? 'null' : e.standards[2].option,
-						"insurance": e.standards[3].option === null ? 'null' : e.standards[3].option,
-						"visa_and_work_permit": e.standards[4].option === null ? 'null' : e.standards[4].option ,
-						"arrival_pickup": e.standards[5].option === null ? 'null' : e.standards[5].option,
-						"accomodation": e.standards[6].option === null ? 'null' : e.standards[6].option,
-						"incoming_preparation": e.standards[7].option === null ? 'null' : e.standards[7].option,
-						"first_day_of_work": e.standards[8].option === null ? 'null' : e.standards[8].option,
-						"alignment_spaces_with_opp_provider": e.standards[9].option === null ? 'null' : e.standards[9].option,
-						"job_description": e.standards[10].option === null ? 'null' :e.standards[10].option ,
-						"working_hours": e.standards[11].option === null ? 'null' :e.standards[11].option ,
-						"duration": e.standards[12].option === null ? 'null' :e.standards[12].option ,
-						"opportunity_benefits": e.standards[13].option === null ? 'null' :e.standards[13].option ,
-						"departure_support": e.standards[14].option === null ? 'null' :e.standards[14].option ,
-						"debrief_with_aiesec": e.standards[15].option === null ? 'null' :e.standards[15].option ,
+						"standards_answers": std_answers,
+						"personal_goal_setting": e.standards[0].standard_option === null ? 'null' : e.standards[0].standard_option.option,
+						"outgoing_preparation": e.standards[1].standard_option === null ? 'null' : e.standards[1].standard_option.option,
+						"expectation_setting": e.standards[2].standard_option === null ? 'null' : e.standards[2].standard_option.option,
+						"insurance": e.standards[3].standard_option === null ? 'null' : e.standards[3].standard_option.option,
+						"visa_and_work_permit": e.standards[4].standard_option === null ? 'null' : e.standards[4].standard_option.option ,
+						"arrival_pickup": e.standards[5].standard_option === null ? 'null' : e.standards[5].standard_option.option,
+						"accomodation": e.standards[6].standard_option === null ? 'null' : e.standards[6].standard_option.option,
+						"incoming_preparation": e.standards[7].standard_option === null ? 'null' : e.standards[7].standard_option.option,
+						"first_day_of_work": e.standards[8].standard_option === null ? 'null' : e.standards[8].standard_option.option,
+						"alignment_spaces_with_opp_provider": e.standards[9].standard_option === null ? 'null' : e.standards[9].standard_option.option,
+						"job_description": e.standards[10].standard_option === null ? 'null' :e.standards[10].standard_option.option ,
+						"working_hours": e.standards[11].standard_option === null ? 'null' :e.standards[11].standard_option.option ,
+						"duration": e.standards[12].standard_option === null ? 'null' :e.standards[12].standard_option.option ,
+						"opportunity_benefits": e.standards[13].standard_option === null ? 'null' :e.standards[13].standard_option.option ,
+						"departure_support": e.standards[14].standard_option === null ? 'null' :e.standards[14].standard_option.option ,
+						"debrief_with_aiesec": e.standards[15].standard_option === null ? 'null' :e.standards[15].standard_option.option ,
 														
 					});
 					document.getElementById('loading-txt').innerHTML = `<div align="center"><p style="font-size:40px; font-weight:bold">Loading ${((loading.porcentaje(loading.actual_item,loading.total_items))*100).toFixed(0)}%</p></div>`
