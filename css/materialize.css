@@ -2849,7 +2849,7 @@ video.responsive-video {
   display: none;
   position: absolute;
   left: 50%;
-  bottom: 0;
+  bottom: 5%;
   min-width: 100%;
   min-height: 100%;
   -webkit-transform: translate3d(0, 0, 0);
